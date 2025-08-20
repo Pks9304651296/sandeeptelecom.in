@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandeep Telecom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* --- NEW STYLES ADDED --- */
+
+        /* Background Image */
+        body {
+            background-image: url('https://images.unsplash.com/photo-1598330664288-94cf21d8a5f3?q=80&w=2070&auto=format&fit=crop'); /* Example background image */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Content Overlay for Readability */
+        section {
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background for sections */
+        }
+        
+        #home {
+             background-color: rgba(239, 246, 255, 0.9); /* Semi-transparent blueish background for home */
+        }
+
+        #services .bg-blue-50, #repair .bg-white, #products .bg-white {
+             background-color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* --- KEYFRAME ANIMATIONS --- */
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slideIn {
+            animation: slideIn 0.5s ease-in-out;
+        }
+        
+        /* New Pulse Animation for Buttons */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        .animate-pulse-button {
+            animation: pulse 2s infinite;
+        }
+
+        /* --- TRANSITION FOR HOVER EFFECTS --- */
+        .card-hover-effect {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .card-hover-effect:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        #admin-panel.full-page {
+            position: static;
+            background: white;
+            padding: 2rem;
+            max-width: none;
+            width: 100%;
+            height: 100vh;
+            overflow: auto;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <nav id="nav" class="bg-blue-600 text-white p-4 sticky top-0 shadow-md z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Sandeep Telecom</h1>
+            <div class="space-x-4">
+                <a href="#home" class="hover:text-blue-200">Home</a>
+                <a href="#services" class="hover:text-blue-200">Services</a>
+                <a href="#repair" class="hover:text-blue-200">Repair</a>
+                <a href="#repair-status" class="hover:text-blue-200">Repair Status</a>
+                <a href="#products" class="hover:text-blue-200">Products</a>
+                <a href="#" id="login-link" class="hover:text-blue-200">Login</a>
+                <a href="#contact" class="hover:text-blue-200">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="py-16 text-center animate-fadeIn">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold mb-4 text-blue-800">Welcome to Sandeep Telecom</h2>
+            <p class="text-lg text-gray-600 mb-8">Your trusted partner for CSC (Common Service Centre) services including Aadhaar Card, PAN Card, Banking, Education, Printing, and various Government Services. We also specialize in repairing all types of phones and selling premium mobile accessories like Earphones, Buds, Chargers, Sound Speakers, Phones, Cables, Tempered Glass, and more.</p>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto animate-slideIn">
+                <h3 class="text-2xl font-semibold mb-4 text-blue-600">Check Repair Status</h3>
+                <input type="text" id="home-invoice-search" placeholder="Enter Invoice Number" class="w-full p-2 border border-gray-300 rounded mb-4">
+                <button id="home-check-status" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 animate-pulse-button">Check Status</button>
+                <div id="home-status-result" class="mt-4 text-left"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-16 animate-fadeIn">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8 text-blue-800">Our Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-blue-50 p-6 rounded-lg shadow-md animate-slideIn card-hover-effect">
+                    <i class="fas fa-id-card text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">CSC Services</h3>
+                    <p class="text-gray-600">Aadhaar Card, PAN Card, Banking, Education, Printing, and various Government Services.</p>
+                </div>
+                <div class="bg-blue-50 p-6 rounded-lg shadow-md animate-slideIn card-hover-effect" style="animation-delay: 0.2s;">
+                    <i class="fas fa-print text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Printing Services</h3>
+                    <p class="text-gray-600">High-quality printing for documents, photos, and more.</p>
+                </div>
+                <div class="bg-blue-50 p-6 rounded-lg shadow-md animate-slideIn card-hover-effect" style="animation-delay: 0.4s;">
+                    <i class="fas fa-file-alt text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Government Services</h3>
+                    <p class="text-gray-600">Assistance with various Government-related applications and services.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="repair" class="py-16 bg-blue-50 animate-fadeIn">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8 text-blue-800">Phone Repair Expertise</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md animate-slideIn card-hover-effect">
+                    <i class="fas fa-mobile-alt text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Display & Screen</h3>
+                    <p class="text-gray-600">High-quality screen replacements for all phone models.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md animate-slideIn card-hover-effect" style="animation-delay: 0.2s;">
+                    <i class="fas fa-microchip text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Board & Chip</h3>
+                    <p class="text-gray-600">Advanced repairs for motherboard and component-level issues.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md animate-slideIn card-hover-effect" style="animation-delay: 0.4s;">
+                    <i class="fas fa-battery-half text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Charging Pin, Mic & Battery</h3>
+                    <p class="text-gray-600">Quick fixes for charging issues, microphone problems, and reliable battery replacements.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="repair-status" class="py-16 text-center animate-fadeIn">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-8 text-blue-800">Check Repair Status</h2>
+            <div class="bg-blue-50 p-6 rounded-lg shadow-md max-w-md mx-auto animate-slideIn">
+                <input type="text" id="status-invoice-search" placeholder="Enter Invoice Number" class="w-full p-2 border border-gray-300 rounded mb-4">
+                <button id="check-status" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 animate-pulse-button">Check Status</button>
+                <div id="status-result" class="mt-4 text-left"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="py-16 bg-blue-50 animate-fadeIn">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8 text-blue-800">Our Products</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md animate-slideIn card-hover-effect">
+                    <i class="fas fa-headphones text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Earphones & Buds</h3>
+                    <p class="text-gray-600">Wired and wireless options for the best audio experience.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md animate-slideIn card-hover-effect" style="animation-delay: 0.2s;">
+                    <i class="fas fa-charging-station text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Chargers & Cables</h3>
+                    <p class="text-gray-600">Fast chargers and durable cables for all devices.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md animate-slideIn card-hover-effect" style="animation-delay: 0.4s;">
+                    <i class="fas fa-volume-up text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Sound Speakers & More</h3>
+                    <p class="text-gray-600">Portable speakers, phones, tempered glass, and other accessories.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-16 animate-fadeIn">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-8 text-blue-800">Contact Us</h2>
+            <p class="text-lg text-gray-600 mb-4"><i class="fas fa-map-marker-alt mr-2"></i>Sandeep Telecom, Puto Road Ghaghra, Near Auto Stand, Ghaghra, Gumla, Jharkhand, India, 835208</p>
+            <p class="text-lg text-gray-600 mb-4"><i class="fas fa-phone mr-2"></i>Mobile: <a href="tel:8863008862" class="text-blue-600 hover:underline">8863008862</a></p>
+            <p class="text-lg text-gray-600 mb-4"><i class="fas fa-envelope mr-2"></i>Email: <a href="mailto:pksing930@gmail.com" class="text-blue-600 hover:underline">pksing930@gmail.com</a></p>
+        </div>
+    </section>
+
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
+            <h2 class="text-2xl font-bold mb-4 text-blue-800">Login</h2>
+            <input type="text" id="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded mb-4">
+            <input type="password" id="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded mb-4">
+            <button id="login-btn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">Login</button>
+            <button id="close-login" class="mt-2 text-gray-600 hover:underline">Close</button>
+        </div>
+    </div>
+
+    <div id="admin-panel" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 overflow-y-auto">
+        <div class="bg-white p-8 rounded-lg shadow-lg max-w-4xl w-full m-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-blue-800">Admin Panel</h2>
+                <button id="logout-btn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Logout</button>
+            </div>
+            <button id="new-job-btn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-4">New Job Sheet</button>
+            <div id="job-form-container" class="hidden">
+                <form id="job-form">
+                    <input type="hidden" name="invoice">
+                    <input type="text" name="customer_name" placeholder="Customer Name" class="w-full p-2 border border-gray-300 rounded mb-2" required>
+                    <input type="text" name="customer_mobile" placeholder="Customer Mobile Number" class="w-full p-2 border border-gray-300 rounded mb-2" required>
+                    <input type="text" name="mobile_company" placeholder="Mobile Company Name" class="w-full p-2 border border-gray-300 rounded mb-2" required>
+                    <input type="text" name="mobile_model" placeholder="Mobile Model" class="w-full p-2 border border-gray-300 rounded mb-2" required>
+                    <input type="text" name="imei1" placeholder="IMEI 1" class="w-full p-2 border border-gray-300 rounded mb-2">
+                    <input type="text" name="imei2" placeholder="IMEI 2" class="w-full p-2 border border-gray-300 rounded mb-2">
+                    <textarea name="problem" placeholder="Problem in Phone" class="w-full p-2 border border-gray-300 rounded mb-2" required></textarea>
+                    <input type="number" name="cost" placeholder="Repairing Cost" class="w-full p-2 border border-gray-300 rounded mb-2" required>
+                    <input type="number" name="received_amount" placeholder="Received Amount" class="w-full p-2 border border-gray-300 rounded mb-2" required>
+                    <input type="text" name="dues" placeholder="Dues Amount" class="w-full p-2 border border-gray-300 rounded mb-2" readonly>
+                    <input type="text" name="repair_time" placeholder="Repairing Time" class="w-full p-2 border border-gray-300 rounded mb-2">
+                    <input type="date" name="receiving_date" class="w-full p-2 border border-gray-300 rounded mb-2" required>
+                    <select name="status" class="w-full p-2 border border-gray-300 rounded mb-2" required>
+                        <option value="received">Received</option>
+                        <option value="under process">Under Process</option>
+                        <option value="repaired">Repaired</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    <div class="mb-2">
+                        <label class="block text-gray-600 mb-1">Received Items:</label>
+                        <label><input type="checkbox" name="items" value="mobile phone"> Mobile Phone</label>
+                        <label><input type="checkbox" name="items" value="sim"> SIM</label>
+                        <label><input type="checkbox" name="items" value="sim tray"> SIM Tray</label>
+                        <label><input type="checkbox" name="items" value="battery"> Battery</label>
+                        <label><input type="checkbox" name="items" value="back cover"> Back Cover</label>
+                        <label><input type="checkbox" name="items" value="sd card"> SD Card</label>
+                        <label><input type="checkbox" name="items" value="charger"> Charger</label>
+                        <label><input type="checkbox" name="items" value="cable"> Cable</label>
+                        <label><input type="checkbox" name="items" value="others"> Others</label>
+                    </div>
+                    <textarea name="note" placeholder="Note" class="w-full p-2 border border-gray-300 rounded mb-2"></textarea>
+                    <div class="flex space-x-2">
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex-1">Submit</button>
+                        <button type="button" id="cancel-form" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 flex-1">Cancel</button>
+                    </div>
+                </form>
+            </div>
+            <div id="job-list-container">
+                <h3 class="text-xl font-semibold mb-4 text-blue-600">Submitted Jobs</h3>
+                <button id="print-list" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-4">Print List</button>
+                <table id="job-table" class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-blue-100">
+                            <th class="border p-2">Invoice</th>
+                            <th class="border p-2">Customer</th>
+                            <th class="border p-2">Mobile</th>
+                            <th class="border p-2">Status</th>
+                            <th class="border p-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="invoice-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 overflow-y-auto">
+        <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full m-4" id="invoice-content">
+            <h2 class="text-2xl font-bold mb-4 text-blue-800">Invoice</h2>
+            <div id="invoice-details"></div>
+            <div id="qrcode" class="mt-4"></div>
+            <button id="print-invoice" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mt-4">Print</button>
+            <button id="download-invoice" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4 ml-2">Download PDF</button>
+            <button id="close-invoice" class="mt-4 text-gray-600 hover:underline">Close</button>
+        </div>
+    </div>
+
+    <footer id="footer" class="bg-blue-600 text-white p-4 text-center">
+        <p>&copy; 2025 Sandeep Telecom. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const loginModal = document.getElementById('login-modal');
+        const adminPanel = document.getElementById('admin-panel');
+        const invoiceModal = document.getElementById('invoice-modal');
+        const loginLink = document.getElementById('login-link');
+        const jobForm = document.getElementById('job-form');
+        const jobFormContainer = document.getElementById('job-form-container');
+        const jobListContainer = document.getElementById('job-list-container');
+        const jobTableBody = document.querySelector('#job-table tbody');
+        let isLoggedIn = false;
+        let invoiceCounter = localStorage.getItem('invoiceCounter') ? parseInt(localStorage.getItem('invoiceCounter')) : 1000;
+        let jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+        let editingInvoice = null;
+
+        // Check if in admin mode
+        if (location.hash === '#admin') {
+            document.querySelectorAll('section, #nav, #footer').forEach(el => el.classList.add('hidden'));
+            adminPanel.classList.remove('hidden', 'fixed', 'inset-0', 'bg-black', 'bg-opacity-50', 'flex', 'items-center', 'justify-center');
+            adminPanel.querySelector('div').classList.remove('rounded-lg', 'shadow-lg', 'm-4');
+            adminPanel.querySelector('div').classList.add('container', 'mx-auto', 'px-4');
+            adminPanel.classList.add('block');
+            showJobList();
+            isLoggedIn = true; // Assume logged in for admin tab
+        }
+
+        // Show login modal
+        loginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginModal.classList.remove('hidden');
+        });
+
+        // Close login modal
+        document.getElementById('close-login').addEventListener('click', () => loginModal.classList.add('hidden'));
+
+        // Login button
+        document.getElementById('login-btn').addEventListener('click', () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username === 'admin' && password === '123') { // Demo credentials
+                isLoggedIn = true;
+                loginModal.classList.add('hidden');
+                window.open(location.pathname + '#admin', '_blank');
+            } else {
+                alert('Invalid credentials');
+            }
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            isLoggedIn = false;
+            window.location.href = location.pathname; // Redirect to main page
+        });
+
+        // Dues calculation
+        jobForm.querySelector('[name="received_amount"]').addEventListener('input', (e) => {
+            const cost = parseFloat(jobForm.querySelector('[name="cost"]').value) || 0;
+            const received = parseFloat(e.target.value) || 0;
+            jobForm.querySelector('[name="dues"]').value = cost - received;
+        });
+
+        // Submit job form
+        jobForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(jobForm);
+            const data = {};
+            data.items = [];
+            for (let [key, value] of formData.entries()) {
+                if (key === 'items') {
+                    data.items.push(value);
+                } else {
+                    data[key] = value;
+                }
+            }
+            if (!data.invoice) {
+                invoiceCounter++;
+                data.invoice = `INV-${invoiceCounter}`;
+                jobs.push(data);
+            } else {
+                const index = jobs.findIndex(j => j.invoice === data.invoice);
+                if (index !== -1) {
+                    jobs[index] = data;
+                }
+            }
+            localStorage.setItem('jobs', JSON.stringify(jobs));
+            localStorage.setItem('invoiceCounter', invoiceCounter);
+            showJobList();
+            jobFormContainer.classList.add('hidden');
+            jobListContainer.classList.remove('hidden');
+            showInvoice(data);
+        });
+
+        // Cancel form
+        document.getElementById('cancel-form').addEventListener('click', () => {
+            jobFormContainer.classList.add('hidden');
+            jobListContainer.classList.remove('hidden');
+            jobForm.reset();
+            editingInvoice = null;
+        });
+
+        // New job button
+        document.getElementById('new-job-btn').addEventListener('click', () => {
+            jobForm.reset();
+            editingInvoice = null;
+            jobFormContainer.classList.remove('hidden');
+            jobListContainer.classList.add('hidden');
+        });
+
+        // Show job list
+        function showJobList() {
+            jobTableBody.innerHTML = '';
+            jobs.forEach(job => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="border p-2">${job.invoice}</td>
+                    <td class="border p-2">${job.customer_name}</td>
+                    <td class="border p-2">${job.mobile_company} ${job.mobile_model}</td>
+                    <td class="border p-2">${job.status}</td>
+                    <td class="border p-2">
+                        <button class="edit-btn bg-yellow-600 text-white px-2 py-1 rounded hover:bg-yellow-700" data-invoice="${job.invoice}">Edit</button>
+                        <button class="print-btn bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700" data-invoice="${job.invoice}">Print</button>
+                    </td>
+                `;
+                jobTableBody.appendChild(tr);
+            });
+            // Add event listeners
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const invoice = e.target.dataset.invoice;
+                    editJob(invoice);
+                });
+            });
+            document.querySelectorAll('.print-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const invoice = e.target.dataset.invoice;
+                    const job = jobs.find(j => j.invoice === invoice);
+                    if (job) showInvoice(job);
+                });
+            });
+        }
+
+        // Edit job
+        function editJob(invoice) {
+            const job = jobs.find(j => j.invoice === invoice);
+            if (job) {
+                editingInvoice = invoice;
+                jobForm.invoice.value = job.invoice;
+                jobForm.customer_name.value = job.customer_name;
+                jobForm.customer_mobile.value = job.customer_mobile;
+                jobForm.mobile_company.value = job.mobile_company;
+                jobForm.mobile_model.value = job.mobile_model;
+                jobForm.imei1.value = job.imei1 || '';
+                jobForm.imei2.value = job.imei2 || '';
+                jobForm.problem.value = job.problem;
+                jobForm.cost.value = job.cost;
+                jobForm.received_amount.value = job.received_amount;
+                jobForm.dues.value = job.dues;
+                jobForm.repair_time.value = job.repair_time || '';
+                jobForm.receiving_date.value = job.receiving_date;
+                jobForm.status.value = job.status;
+                jobForm.note.value = job.note || '';
+                // Checkboxes
+                const checkboxes = jobForm.querySelectorAll('input[name="items"]');
+                checkboxes.forEach(cb => {
+                    cb.checked = job.items ? job.items.includes(cb.value) : false;
+                });
+                jobFormContainer.classList.remove('hidden');
+                jobListContainer.classList.add('hidden');
+            }
+        }
+
+        // Show invoice
+        function showInvoice(data) {
+            const details = `
+                <p><strong>Invoice:</strong> ${data.invoice}</p>
+                <p><strong>Customer Name:</strong> ${data.customer_name}</p>
+                <p><strong>Mobile Company:</strong> ${data.mobile_company}</p>
+                <p><strong>Model:</strong> ${data.mobile_model}</p>
+                <p><strong>Problem:</strong> ${data.problem}</p>
+                <p><strong>Status:</strong> ${data.status}</p>
+                <p><strong>Cost:</strong> ${data.cost}</p>
+                <p><strong>Received:</strong> ${data.received_amount}</p>
+                <p><strong>Dues:</strong> ${data.dues}</p>
+                <p><strong>Items:</strong> ${data.items ? data.items.join(', ') : 'None'}</p>
+            `;
+            document.getElementById('invoice-details').innerHTML = details;
+            const qrData = JSON.stringify({
+                website: 'https://sandeeptelecom.com',
+                customer_name: data.customer_name,
+                mobile_company: data.mobile_company,
+                model: data.mobile_model,
+                problem: data.problem,
+                status: data.status
+            });
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById('qrcode'), qrData);
+            invoiceModal.classList.remove('hidden');
+        }
+
+        // Close invoice
+        document.getElementById('close-invoice').addEventListener('click', () => invoiceModal.classList.add('hidden'));
+
+        // Print invoice
+        document.getElementById('print-invoice').addEventListener('click', () => {
+            const printContent = document.getElementById('invoice-content').innerHTML;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
+        });
+
+        // Download PDF
+        document.getElementById('download-invoice').addEventListener('click', async () => {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            const element = document.getElementById('invoice-content');
+            const canvas = await html2canvas(element);
+            const imgData = canvas.toDataURL('image/png');
+            pdf.addImage(imgData, 'PNG', 10, 10, 180, 0);
+            pdf.save('invoice.pdf');
+        });
+
+        // Print list
+        document.getElementById('print-list').addEventListener('click', () => {
+            const printContent = jobListContainer.innerHTML;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
+        });
+
+        // Check status function
+        function checkStatus(invoice, resultDiv) {
+            const job = jobs.find(j => j.invoice === invoice);
+            if (job) {
+                resultDiv.innerHTML = `
+                    <p><strong>Customer Name:</strong> ${job.customer_name}</p>
+                    <p><strong>Mobile Company:</strong> ${job.mobile_company}</p>
+                    <p><strong>Model:</strong> ${job.mobile_model}</p>
+                    <p><strong>Problem:</strong> ${job.problem}</p>
+                    <p><strong>Status:</strong> ${job.status}</p>
+                `;
+            } else {
+                resultDiv.innerHTML = '<p class="text-red-600">Invoice not found.</p>';
+            }
+        }
+
+        // Home check status
+        document.getElementById('home-check-status').addEventListener('click', () => {
+            const invoice = document.getElementById('home-invoice-search').value;
+            checkStatus(invoice, document.getElementById('home-status-result'));
+        });
+
+        // Status section check
+        document.getElementById('check-status').addEventListener('click', () => {
+            const invoice = document.getElementById('status-invoice-search').value;
+            checkStatus(invoice, document.getElementById('status-result'));
+        });
+
+        // Initial show list if in admin
+        if (location.hash === '#admin') {
+            showJobList();
+        }
+    </script>
+</body>
+</html>
